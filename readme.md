@@ -51,7 +51,7 @@ A_pcd_raw.paint_uniform_color([0.0, 0.0, 1.0]) # show A_pcd in blue
 B_pcd_raw.paint_uniform_color([1.0, 0.0, 0.0]) # show B_pcd in red
 o3d.visualization.draw_geometries([A_pcd_raw,B_pcd_raw]) # plot A and B 
 ```
-<img src="./data/before_ds.png" alt="original point cloud pair" width="400"/>
+<img src="./data/before_ds.png" alt="original point cloud pair" width="500"/>
 
 The source point cloud, denoted <img src="https://render.githubusercontent.com/render/math?math=A">, is painted in blue and the target point cloud, denoted <img src="https://render.githubusercontent.com/render/math?math=B">, is painted in red. 
 
@@ -69,7 +69,7 @@ o3d.visualization.draw_geometries([A_pcd,B_pcd]) # plot downsampled A and B
 A_xyz = pcd2xyz(A_pcd) # np array of size 3 by N
 B_xyz = pcd2xyz(B_pcd) # np array of size 3 by M
 ```
-<img src="./data/after_ds.png" alt="downsampled point cloud pair" width="400"/>
+<img src="./data/after_ds.png" alt="downsampled point cloud pair" width="500"/>
 
 After downsamping, we see that the two point clouds are still highly distinguishable, while now <img src="https://render.githubusercontent.com/render/math?math=A"> only has <img src="https://render.githubusercontent.com/render/math?math=5,208"> points and <img src="https://render.githubusercontent.com/render/math?math=B"> has only <img src="https://render.githubusercontent.com/render/math?math=5,034"> points.
 
@@ -156,9 +156,13 @@ In this case, we see that the result of TEASER++ is already very accurate, so IC
 
 ### References
 [1]. Q.-Y. Zhou, J. Park, and V. Koltun. "Open3D: A modern library for 3D data processing." arXiv preprint arXiv:1801.09847, 2018.
+
 [2]. A. Zeng, S. Song, M. Nießner, M. Fisher, J. Xiao, and T. Funkhouser, “3dmatch: Learning the matching of local 3d geometry in range scans,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, vol. 1, no. 2, 2017, p. 4.
+
 [3]. R. Rusu, N. Blodow, and M. Beetz, “Fast point feature histograms (FPFH) for 3d registration,” in IEEE Intl. Conf. on Robotics and Automation (ICRA). Citeseer, 2009, pp. 3212–3217.
+
 [4]. H. Yang, J. Shi, and L. Carlone, "TEASER: Fast and Certifiable Point Cloud Registration,". arXiv:2001.07715 [cs, math], Jan. 2020.
+
 [5]. P. J. Besl and N. D. McKay, “A method for registration of 3-D shapes,” IEEE Trans. Pattern Anal. Machine Intell., vol. 14, no. 2, 1992.
 
 ### Acknowledgements
