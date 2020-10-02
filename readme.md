@@ -111,7 +111,7 @@ line_set = o3d.geometry.LineSet(
 line_set.colors = o3d.utility.Vector3dVector(colors)
 o3d.visualization.draw_geometries([A_pcd,B_pcd,line_set])
 ```
-<img src="./data/matches.png" alt="FPFH feature matches" width="400"/>
+<img src="./data/matches.png" alt="FPFH feature matches" width="500"/>
 
 5. **Robust global registration using TEASER++**
 
@@ -133,7 +133,7 @@ A_pcd_T_teaser = copy.deepcopy(A_pcd).transform(T_teaser)
 o3d.visualization.draw_geometries([A_pcd_T_teaser,B_pcd])
 ```
 
-<img src="./data/after_teaser.png" alt="FPFH feature matches" width="400"/>
+<img src="./data/after_teaser.png" alt="FPFH feature matches" width="500"/>
 
 6. **Local refinement using ICP**
 
@@ -150,7 +150,7 @@ T_icp = icp_sol.transformation
 A_pcd_T_icp = copy.deepcopy(A_pcd).transform(T_icp)
 o3d.visualization.draw_geometries([A_pcd_T_icp,B_pcd])
 ```
-<img src="./data/after_icp.png" alt="ICP refinement" width="400"/>
+<img src="./data/after_icp.png" alt="ICP refinement" width="500"/>
 
 In this case, we see that the result of TEASER++ is already very accurate, so ICP refinement only produces slightly better registration. ICP refinement could be very helpful if the number of FPFH correspondences is very small and TEASER++ only gets to perform global registration using a set of sparse keypoints.
 
