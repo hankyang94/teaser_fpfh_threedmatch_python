@@ -25,20 +25,20 @@ cd python && pip install .
 
 Registration is a well-known chicken-and-egg problem: 
 - **Chicken**: given correct point-to-point correspondences (eg., suppose one has an oracle that can precisely tell which point in cloud B corresponds to certain point, say the eye of a bunny, in cloud A, or declare the nonexistence of such a correspondence when A and B have non-overlapping segments), compute the rigid transformation;
-- **Egg**: given the correct transformation, figure out the correct correspondences
+- **Egg**: given the correct transformation, figure out the correct correspondences.
 
-Each problem, individually, is easy to solve, because the Chicken problem can be solved in closed form, and the egg problem boils down to nearest point search in Euclidean space.
+Each problem, individually, is easy to solve, because the chicken problem can be solved in closed form, and the egg problem boils down to nearest neighbour search in Euclidean space.
 
 However, in practice, there is no oracle for providing (even reasonally good) correspondences, and usually there is no good initial estimate of the transformation -- making 3D registration a challenging problem. 
 
-In this tutorial, we look at one way of solving the problem, that is, we accept the fact that feature correspondences are poor (meaning that a large fraction of the correspondences are wrong, called outliers), but we use TEASER++, an algorithm that can tolerate large amount of outliers, to compute an accurate estimate of the pose. Then, we can use a local  algorithm to fine-tune the registration
+In this tutorial, we look at one way of solving the problem, that is, we accept the fact that feature correspondences are poor (meaning that a large fraction of the correspondences are wrong, called outliers), but we use TEASER++, an algorithm that can tolerate large amount of outliers, to compute an accurate estimate of the pose. Then, we can (optionally) use a local  algorithm to fine-tune the registration.
 
-One can run this example by:
+One can run the full example by:
 ```shell
 OMP_NUM_THREADS=12 python example.py
 ```
 
-And below we provide detailed explanation of the algorithm.
+However, below we provide detailed explanation of the algorithm, and share related insights.
 
 1. **Load and visualize a pair of point clouds**
 
@@ -53,7 +53,7 @@ o3d.visualization.draw_geometries([A_pcd_raw,B_pcd_raw]) # plot A and B
 ```
 <img src="./data/before_ds.png" alt="original point cloud pair" width="400"/>
 
-The source point cloud, denoted $A$, is painted in blue and the target point cloud, denoted $B$, is painted in red. 
+The source point cloud, denoted <img src="https://render.githubusercontent.com/render/math?math=A">, is painted in blue and the target point cloud, denoted <img src="https://render.githubusercontent.com/render/math?math=B">, is painted in red. 
 
 2. **Voxel downsampling**
 
@@ -137,7 +137,7 @@ o3d.visualization.draw_geometries([A_pcd_T_teaser,B_pcd])
 
 6. **Local refinement using ICP**
 
-In some cases, one might want to fine-tune the registration by running ICP on the original dense point clouds, with TEASER++'s solution as an initial guess. This is easily accomplished by calling ICP from Open3D:
+In some cases, one might want to fine-tune the registration by running ICP on the original dense point clouds, with TEASER++'s solution as an initial guess. This is easily accomplished by calling ICP [5] from Open3D:
 ```python
 # local refinement using ICP
 icp_sol = o3d.registration.registration_icp(
@@ -159,6 +159,7 @@ In this case, we see that the result of TEASER++ is already very accurate, so IC
 [2]. A. Zeng, S. Song, M. Nießner, M. Fisher, J. Xiao, and T. Funkhouser, “3dmatch: Learning the matching of local 3d geometry in range scans,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, vol. 1, no. 2, 2017, p. 4.
 [3]. R. Rusu, N. Blodow, and M. Beetz, “Fast point feature histograms (FPFH) for 3d registration,” in IEEE Intl. Conf. on Robotics and Automation (ICRA). Citeseer, 2009, pp. 3212–3217.
 [4]. H. Yang, J. Shi, and L. Carlone, "TEASER: Fast and Certifiable Point Cloud Registration,". arXiv:2001.07715 [cs, math], Jan. 2020.
+[5]. P. J. Besl and N. D. McKay, “A method for registration of 3-D shapes,” IEEE Trans. Pattern Anal. Machine Intell., vol. 14, no. 2, 1992.
 
 ### Acknowledgements
 Thanks to [Wei Dong](http://dongwei.info/) for providing sample code on extracting FPFH features and establishing putative correspondences.
