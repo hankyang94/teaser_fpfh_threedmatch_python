@@ -1,6 +1,6 @@
-## Tutorial: Registration on 3DMatch with FPFH + TEASER + ICP
+# Tutorial: Registration on 3DMatch with FPFH + TEASER + ICP
 
-### Prerequisites
+## Prerequisites
 - [Install Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/#regular-installation)
 - Create a conda environment called `py3-teaser`:
 ```shell
@@ -20,7 +20,7 @@ cmake -DTEASERPP_PYTHON_VERSION=3.6 .. && make teaserpp_python
 cd python && pip install .
 ```
 
-### Registration Tutorial
+## Registration Tutorial
 3D registration is a fundamental problem in computer vision and robotics, and it seeks to find the best rigid transformation between two sets of 3D points (eg., obtained from Lidar scans or RGB-D cameras). Registration finds extensive applications in localization and mapping, object detection and 3D reconstruction.
 
 Registration is a well-known chicken-and-egg problem: 
@@ -40,7 +40,7 @@ OMP_NUM_THREADS=12 python example.py
 
 However, below we provide detailed explanation of the algorithm, and share related insights.
 
-#### 1. **Load and visualize a pair of point clouds**
+### 1. **Load and visualize a pair of point clouds**
 
 First, we use [Open3D](http://www.open3d.org/) [1] to load a pair of point clouds from the [3DMatch](https://3dmatch.cs.princeton.edu/) [2] test dataset and visualize them:
 ```python
@@ -55,7 +55,7 @@ o3d.visualization.draw_geometries([A_pcd_raw,B_pcd_raw]) # plot A and B
 
 The source point cloud, denoted <img src="https://render.githubusercontent.com/render/math?math=A">, is painted in blue and the target point cloud, denoted <img src="https://render.githubusercontent.com/render/math?math=B">, is painted in red. 
 
-#### 2. **Voxel downsampling**
+### 2. **Voxel downsampling**
 
 In this case, <img src="https://render.githubusercontent.com/render/math?math=A"> has <img src="https://render.githubusercontent.com/render/math?math=258,342"> points and <img src="https://render.githubusercontent.com/render/math?math=B"> has <img src="https://render.githubusercontent.com/render/math?math=313,395"> points. To increase registration speed, we perform voxel downsampling and visualize the downsampled point clouds.
 
@@ -73,7 +73,7 @@ B_xyz = pcd2xyz(B_pcd) # np array of size 3 by M
 
 After downsamping, we see that the two point clouds are still highly distinguishable, while now <img src="https://render.githubusercontent.com/render/math?math=A"> only has <img src="https://render.githubusercontent.com/render/math?math=5,208"> points and <img src="https://render.githubusercontent.com/render/math?math=B"> has only <img src="https://render.githubusercontent.com/render/math?math=5,034"> points.
 
-#### 3. **Extract FPFH feature descriptors**
+### 3. **Extract FPFH feature descriptors**
 
 We now compute FPFH [3] feature descriptors for each point in A and each point in B. FPFH feature descriptor is a vector of 33 numbers that describe the *intrisic* local geometric signature of each point (such as angles, distances, and curvature), and hence being invariant to rigid transformation.
 ```python
@@ -84,7 +84,7 @@ B_feats = extract_fpfh(B_pcd,VOXEL_SIZE)
 The `extract_fpfh` function is defined in the `helpers.py` script.
 
 
-#### 4. **Establish putative correspondences**
+### 4. **Establish putative correspondences**
 
 Using the computed FPFH features, we can now associate points in A to points in B by computing the similarity scores between the FPFH descriptors -- similar points should have similar local geometry and therefore also similar FPFH features. We say point <img src="https://render.githubusercontent.com/render/math?math=a_i \in A"> and point <img src="https://render.githubusercontent.com/render/math?math=b_j \in B"> is a pair of corresponding points when the FPFH feature of <img src="https://render.githubusercontent.com/render/math?math=a_i">, denoted <img src="https://render.githubusercontent.com/render/math?math=f_{a_i}"> and the FPFH feature of <img src="https://render.githubusercontent.com/render/math?math=b_j">, denoted <img src="https://render.githubusercontent.com/render/math?math=f_{b_j}"> are *mutually* **closest** to each other. Formally, this means that <img src="https://render.githubusercontent.com/render/math?math=\| f_{b_j} - f_{a_i} \| \leq \|f_b - f_{a_i} \|, \forall b \in B">, and <img src="https://render.githubusercontent.com/render/math?math=\| f_{b_j} - f_{a_i} \| \leq \|f_{b_j} - f_a \|, \forall a \in A">.
 
@@ -113,7 +113,7 @@ o3d.visualization.draw_geometries([A_pcd,B_pcd,line_set])
 ```
 <img src="./data/matches.png" alt="FPFH feature matches" width="500"/>
 
-#### 5. **Robust global registration using TEASER++**
+### 5. **Robust global registration using TEASER++**
 
 Now it is time to show the power of TEASER++ [4]. We feed all putative correspondences to TEASER++ and let TEASER++ compute a transformation to align the corresponding points. **Note that TEASER++ is a correspondence-based algorithm and it takes two numpy arrays of equal number of columns**, 3 x N, where N is the number of matches (not number of points in the original point clouds). Column i of the first array (a 3D point) corresponds to column i of the second array (another 3D point).
 ```python
@@ -135,7 +135,7 @@ o3d.visualization.draw_geometries([A_pcd_T_teaser,B_pcd])
 
 <img src="./data/after_teaser.png" alt="FPFH feature matches" width="500"/>
 
-#### 6. **Local refinement using ICP**
+### 6. **Local refinement using ICP**
 
 In some cases, one might want to fine-tune the registration by running ICP on the original dense point clouds, with TEASER++'s solution as an initial guess. This is easily accomplished by calling ICP [5] from Open3D:
 ```python
@@ -154,7 +154,7 @@ o3d.visualization.draw_geometries([A_pcd_T_icp,B_pcd])
 
 In this case, we see that the result of TEASER++ is already very accurate, so ICP refinement only produces slightly better registration. ICP refinement could be very helpful if the number of FPFH correspondences is very small and TEASER++ only gets to perform global registration using a set of sparse keypoints.
 
-### References
+## References
 [1]. Q.-Y. Zhou, J. Park, and V. Koltun. "Open3D: A modern library for 3D data processing." arXiv preprint arXiv:1801.09847, 2018.
 
 [2]. A. Zeng, S. Song, M. Nießner, M. Fisher, J. Xiao, and T. Funkhouser, “3dmatch: Learning the matching of local 3d geometry in range scans,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, vol. 1, no. 2, 2017, p. 4.
@@ -165,7 +165,7 @@ In this case, we see that the result of TEASER++ is already very accurate, so IC
 
 [5]. P. J. Besl and N. D. McKay, “A method for registration of 3-D shapes,” IEEE Trans. Pattern Anal. Machine Intell., vol. 14, no. 2, 1992.
 
-### Acknowledgements
+## Acknowledgements
 Thanks to [Wei Dong](http://dongwei.info/) for providing sample code on extracting FPFH features and establishing putative correspondences.
 
 
