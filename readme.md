@@ -71,11 +71,11 @@ B_xyz = pcd2xyz(B_pcd) # np array of size 3 by M
 ```
 <img src="./data/after_ds.png" alt="downsampled point cloud pair" width="400"/>
 
-After downsamping, we see that the two point clouds are still highly distinguishable, while now <img src="https://render.githubusercontent.com/render/math?math=A"> only has <img src="https://render.githubusercontent.com/render/math?math=5,208"> points and <img src="https://render.githubusercontent.com/render/math?math=A"> has only <img src="https://render.githubusercontent.com/render/math?math=5,034"> points.
+After downsamping, we see that the two point clouds are still highly distinguishable, while now <img src="https://render.githubusercontent.com/render/math?math=A"> only has <img src="https://render.githubusercontent.com/render/math?math=5,208"> points and <img src="https://render.githubusercontent.com/render/math?math=B"> has only <img src="https://render.githubusercontent.com/render/math?math=5,034"> points.
 
 3. **Extract FPFH feature descriptors**
 
-We know compute FPFH [3] feature descriptors for each point in $A$ and each point in $B$. FPFH feature descriptor is a vector of $33$ numbers that describe the *intrisic* local geometric signature of each point (such as angles, distances, and curvature), and hence being invariant to rigid transformation.
+We now compute FPFH [3] feature descriptors for each point in A and each point in B. FPFH feature descriptor is a vector of 33 numbers that describe the *intrisic* local geometric signature of each point (such as angles, distances, and curvature), and hence being invariant to rigid transformation.
 ```python
 # extract FPFH features
 A_feats = extract_fpfh(A_pcd,VOXEL_SIZE)
@@ -86,9 +86,9 @@ The `extract_fpfh` function is defined in the `helpers.py` script.
 
 4. **Establish putative correspondences**
 
-Using the computed FPFH features, we can now associate points in $A$ to points in $B$ by computing the similarity scores between the FPFH descriptors -- similar points should have similar local geometry and therefore also similar FPFH feature. We say point $a_i \in A$ and point $b_j \in B$ is a pair of corresponding points when the FPFH feature of $a_i$, denoted $f_{a_i}$ and the FPFH feature of $b_j$, denoted $f_{b_j}$ are *mutually* closest to each other. Formally, this means that $\| f_{b_j} - f_{a_i} \| \leq \|f_b - f_{a_i} \|, \forall b \in B$, and $\| f_{b_j} - f_{a_i} \| \leq \|f_{b_j} - f_a \|, \forall a \in A$.
+Using the computed FPFH features, we can now associate points in A to points in B by computing the similarity scores between the FPFH descriptors -- similar points should have similar local geometry and therefore also similar FPFH features. We say point <img src="https://render.githubusercontent.com/render/math?math=a_i \in A"> and point <img src="https://render.githubusercontent.com/render/math?math=b_j \in B"> is a pair of corresponding points when the FPFH feature of <img src="https://render.githubusercontent.com/render/math?math=a_i">, denoted <img src="https://render.githubusercontent.com/render/math?math=f_{a_i}"> and the FPFH feature of <img src="https://render.githubusercontent.com/render/math?math=b_j">, denoted <img src="https://render.githubusercontent.com/render/math?math=f_{b_j}"> are *mutually* **closest** to each other. Formally, this means that <img src="https://render.githubusercontent.com/render/math?math=\| f_{b_j} - f_{a_i} \| \leq \|f_b - f_{a_i} \|, \forall b \in B">, and <img src="https://render.githubusercontent.com/render/math?math=\| f_{b_j} - f_{a_i} \| \leq \|f_{b_j} - f_a \|, \forall a \in A">.
 
-We visualize the correspondences by drawing green lines between corresponding points. We get $981$ correspondences and we can tell that many of the feature matches are wrong by eyeballing the visualization.
+We visualize the correspondences by drawing green lines between corresponding points. We get 981 correspondences and we can tell that many of the feature matches are wrong by eyeballing the visualization.
 ```python
 # establish correspondences by nearest neighbour search in feature space
 corrs_A, corrs_B = find_correspondences(
@@ -115,7 +115,7 @@ o3d.visualization.draw_geometries([A_pcd,B_pcd,line_set])
 
 5. **Robust global registration using TEASER++**
 
-Now it is time to show the power of TEASER++ [4]. We feed all these putative correspondences to TEASER++ and let TEASER++ compute a transformation to align the corresponding points. Note that TEASER++ is a correspondence-based algorithm and it takes two numpy arrays of equal number of columns, $3 \times N$, where $N$ is the number of matches (not number of points in the original point clouds). Column $i$ of the first array corresponds to the column $i$ of the second array.
+Now it is time to show the power of TEASER++ [4]. We feed all putative correspondences to TEASER++ and let TEASER++ compute a transformation to align the corresponding points. **Note that TEASER++ is a correspondence-based algorithm and it takes two numpy arrays of equal number of columns**, 3 x N, where N is the number of matches (not number of points in the original point clouds). Column i of the first array (a 3D point) corresponds to column i of the second array (another 3D point).
 ```python
 # robust global registration using TEASER++
 NOISE_BOUND = VOXEL_SIZE
