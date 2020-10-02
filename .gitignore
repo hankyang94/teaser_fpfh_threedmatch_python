@@ -1,0 +1,4 @@
+*.DS_Store
+.vscode/
+TEASER-plusplus/
+__pycache__/
