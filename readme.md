@@ -57,7 +57,7 @@ The source point cloud, denoted <img src="https://render.githubusercontent.com/r
 
 2. **Voxel downsampling**
 
-In this case, $A$ has $258,342$ points and $B$ has $313,395$ points. To increase registration speed, we perform voxel downsampling and visualize the downsampled point clouds.
+In this case, <img src="https://render.githubusercontent.com/render/math?math=A"> has <img src="https://render.githubusercontent.com/render/math?math=258,342"> points and <img src="https://render.githubusercontent.com/render/math?math=B"> has <img src="https://render.githubusercontent.com/render/math?math=313,395"> points. To increase registration speed, we perform voxel downsampling and visualize the downsampled point clouds.
 
 ```python
 VOXEL_SIZE = 0.05
@@ -71,7 +71,7 @@ B_xyz = pcd2xyz(B_pcd) # np array of size 3 by M
 ```
 <img src="./data/after_ds.png" alt="downsampled point cloud pair" width="400"/>
 
-After downsamping, we see that the two point clouds are still highly distinguishable, while now $A$ only has $5,208$ points and $B$ has only $5,034$ points.
+After downsamping, we see that the two point clouds are still highly distinguishable, while now <img src="https://render.githubusercontent.com/render/math?math=A"> only has <img src="https://render.githubusercontent.com/render/math?math=5,208"> points and <img src="https://render.githubusercontent.com/render/math?math=A"> has only <img src="https://render.githubusercontent.com/render/math?math=5,034"> points.
 
 3. **Extract FPFH feature descriptors**
 
